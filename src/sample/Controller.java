@@ -44,12 +44,17 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
+    public void addSmile(){
+        writerArea.appendText(":-)");
+    }
+
 
     @Override
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         InputStream iconStream =
-                getClass().getResourceAsStream("smile.png");
+                getClass().getResourceAsStream("ava.png");
         Image image = new Image(iconStream);
         userIcon.setImage(image);
         userName.setText("Doraemon");
