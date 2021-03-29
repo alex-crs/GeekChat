@@ -1,2 +1,13 @@
-.idea/
-out/
+/.settings/
+/.project
+/.classpath
+log
+/logs/
+/out
+*.log
+target
+/.idea
+*.iml
+*.class
+*.DS_Store
+/src/main/resources

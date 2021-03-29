@@ -54,7 +54,7 @@ public class Controller implements Initializable {
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         InputStream iconStream =
-                getClass().getResourceAsStream("ava.png");
+                getClass().getResourceAsStream("avaDor.png");
         Image image = new Image(iconStream);
         userIcon.setImage(image);
         userName.setText("Doraemon");
