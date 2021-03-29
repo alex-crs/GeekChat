@@ -13,75 +13,103 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="1500.0" maxWidth="1500.0" minHeight="200.0" minWidth="200.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-   <children>
-      <MenuBar prefHeight="25.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Menu">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Add user" />
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="Status">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Online" />
-                  <MenuItem mnemonicParsing="false" text="Offline" />
-               </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Settings">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Color" />
-                  <MenuItem mnemonicParsing="false" text="Text" />
-                  <MenuItem mnemonicParsing="false" text="Connection" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <SplitPane dividerPositions="0.29797979797979796" layoutX="133.0" layoutY="138.0" minHeight="300.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
-        <items>
-          <AnchorPane maxWidth="200.0" minHeight="200.0" minWidth="100.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <ListView fx:id="userList" focusTraversable="false" layoutY="56.0" prefHeight="373.0" prefWidth="175.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <SplitPane dividerPositions="0.9029649595687331" layoutX="76.0" layoutY="49.0" orientation="VERTICAL" prefHeight="373.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <items>
-                      <AnchorPane minHeight="200.0" minWidth="200.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextArea fx:id="dialog" focusTraversable="false" layoutX="149.0" layoutY="14.0" minHeight="200.0" minWidth="200.0" prefHeight="323.0" prefWidth="415.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="14.0" />
-                                 </font></TextArea>
-                              <Label fx:id="userName" layoutX="68.0" layoutY="10.0" text="userName" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="10.0">
-                                 <font>
-                                    <Font name="Comic Sans MS Bold" size="14.0" />
-                                 </font></Label>
-                              <ImageView fx:id="userIcon" fitHeight="40.0" fitWidth="40.0" layoutX="10.0" layoutY="0.0" AnchorPane.topAnchor="0.0" />
 
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane maxHeight="60.0" minHeight="25.0" minWidth="25.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextField fx:id="writerArea" layoutX="27.0" layoutY="2.0" maxWidth="300.0" prefHeight="33.0" prefWidth="340.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="13.0" />
-                                 </font></TextField>
-                              <Button fx:id="smileBtn" layoutX="8.0" layoutY="4.0" mnemonicParsing="false" onAction="#addSmile" style="-fx-background-image: smile.png;" text=":-)" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <Button id="sendBtn" layoutX="339.0" layoutY="4.0" mnemonicParsing="false" onAction="#sendMsg" text="SEND" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
+<AnchorPane maxHeight="1500.0" maxWidth="1500.0" minHeight="200.0" minWidth="200.0" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <children>
+        <MenuBar prefHeight="25.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Add user"/>
                     </items>
-                  </SplitPane>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </children>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Status">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Online"/>
+                        <MenuItem mnemonicParsing="false" text="Offline"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Color"/>
+                        <MenuItem mnemonicParsing="false" text="Text"/>
+                        <MenuItem mnemonicParsing="false" text="Connection"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <SplitPane dividerPositions="0.29797979797979796" layoutX="133.0" layoutY="138.0" minHeight="300.0"
+                   prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+            <items>
+                <AnchorPane maxWidth="200.0" minHeight="200.0" minWidth="100.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <ListView fx:id="userList" focusTraversable="false" layoutY="56.0" prefHeight="373.0"
+                                  prefWidth="175.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <SplitPane dividerPositions="0.9029649595687331" layoutX="76.0" layoutY="49.0"
+                                   orientation="VERTICAL" prefHeight="373.0" prefWidth="417.0"
+                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <items>
+                                <AnchorPane minHeight="200.0" minWidth="200.0" prefHeight="100.0" prefWidth="160.0">
+                                    <children>
+                                        <TextArea fx:id="dialog" focusTraversable="false" layoutX="149.0" layoutY="14.0"
+                                                  minHeight="200.0" minWidth="200.0" prefHeight="323.0"
+                                                  prefWidth="415.0" wrapText="true" AnchorPane.bottomAnchor="0.0"
+                                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                  AnchorPane.topAnchor="40.0">
+                                            <font>
+                                                <Font name="Comic Sans MS" size="14.0"/>
+                                            </font>
+                                        </TextArea>
+                                        <Label fx:id="userName" layoutX="68.0" layoutY="10.0" text="userName"
+                                               AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="10.0">
+                                            <font>
+                                                <Font name="Comic Sans MS Bold" size="14.0"/>
+                                            </font>
+                                        </Label>
+                                        <ImageView fx:id="userIcon" fitHeight="40.0" fitWidth="40.0" layoutX="10.0"
+                                                   layoutY="0.0" AnchorPane.topAnchor="0.0"/>
+
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane maxHeight="60.0" minHeight="25.0" minWidth="25.0" prefHeight="100.0"
+                                            prefWidth="160.0">
+                                    <children>
+                                        <TextField fx:id="writerArea" layoutX="27.0" layoutY="2.0" maxWidth="300.0"
+                                                   prefHeight="33.0" prefWidth="340.0" AnchorPane.bottomAnchor="0.0"
+                                                   AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="45.0"
+                                                   AnchorPane.topAnchor="0.0">
+                                            <font>
+                                                <Font name="Comic Sans MS" size="13.0"/>
+                                            </font>
+                                        </TextField>
+                                        <Button fx:id="smileBtn" layoutX="8.0" layoutY="4.0" mnemonicParsing="false"
+                                                onAction="#addSmile" style="-fx-background-image: smile.png;" text=":-)"
+                                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                AnchorPane.topAnchor="0.0"/>
+                                        <Button id="sendBtn" layoutX="339.0" layoutY="4.0" mnemonicParsing="false"
+                                                onAction="#sendMsg" text="SEND" AnchorPane.bottomAnchor="0.0"
+                                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
 </AnchorPane>

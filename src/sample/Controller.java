@@ -1,7 +1,6 @@
 package sample;
 
 
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -15,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -45,7 +45,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void addSmile(){
+    public void addSmile() {
         writerArea.appendText(":-)");
     }
 
@@ -66,7 +66,7 @@ public class Controller implements Initializable {
         writerArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode()== KeyCode.ENTER) {
+                if (event.getCode() == KeyCode.ENTER) {
                     sendMsg();
                     writerArea.focusedProperty();
                 }
