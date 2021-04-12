@@ -14,18 +14,17 @@ import java.io.InputStream;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         InputStream iconStream =
                 getClass().getResourceAsStream("icon.png");
         Image image = new Image(iconStream);
         primaryStage.getIcons().add(image);
         primaryStage.setMinWidth(300);
         primaryStage.setMinHeight(140);
-        FXMLLoader mainWindow = new FXMLLoader(getClass().getResource("sample.fxml"));
+        FXMLLoader mainWindow = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
         Parent main = mainWindow.load();
         primaryStage.setTitle("ChatForOne");
-        Scene scene = new Scene(main, 600, 500);
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(main, 600, 500));
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -38,7 +37,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-
         launch(args);
     }
 }

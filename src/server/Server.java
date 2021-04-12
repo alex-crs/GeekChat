@@ -16,14 +16,10 @@ public class Server {
         try {
             AuthService.connect();
             server = new ServerSocket(6001);
-            System.out.println("Server start");
-
-            //System.out.println("Result from DB: " + AuthService.getNickNameByLoginAndPassword("login1","pass1"));
-
-
+            System.out.println("Сервер запущен");
             while (true) {
-                socket = server.accept(); //сервер принимает данные
-                System.out.printf("Client [%s] connected\n", socket.getInetAddress());
+                socket = server.accept(); //сервер принимает данные если связь установлена
+                System.out.printf("Client [%s]  try to connect\n", socket.getInetAddress());
                 new ClientHandler(this, socket);
             }
 
@@ -31,7 +27,12 @@ public class Server {
             e.printStackTrace();
         } finally {
             try {
+                System.out.printf("Client %s disconnected", socket.getInetAddress());
                 socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
                 server.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -42,39 +43,49 @@ public class Server {
     }
 
     public void subscribe(ClientHandler client) {
-        broadCastMessage("В чате появился " + client.getNickname());
+        broadCastMessage(client, "В чате появился " + client.getNickname());
         users.add(client);
-        //broadCastMessage(sendUserList());
+        sendUserList();
     }
 
     public void unSubscribe(ClientHandler client) {
         users.remove(client);
-        broadCastMessage("Из чата вышел " + client.getNickname());
-        //broadCastMessage(sendUserList());
-
-    }
-
-    public void broadCastMessage(String str) {
-        for (ClientHandler c : users) {
-            c.sendMsg(str);
+        if (client.getNickname() != null && !client.getNickname().isEmpty()) {
+            broadCastMessage(client, "Из чата вышел " + client.getNickname());
+            sendUserList();
         }
     }
 
-    private String sendUserList() { //пока работает некорректно( посмотрю на уроке как вы сделали
-        String usersString = "/updateUL";
-        for (ClientHandler l : users) {
-            usersString = usersString + " " + l.getNickname();
-        }
-        return usersString;
-    }
-
-    public void privateMessage(ClientHandler client, String nick, String text) {
+    public void broadCastMessage(ClientHandler from, String str) {
         for (ClientHandler c : users) {
-            if (nick.equals(c.getNickname())) {
-                c.sendMsg(client.getNickname() + " [Отправлено для " + nick + "]" + text);
+            if (!c.checkBlackList(from.getNickname())) {
+                c.sendMsg(str);
             }
         }
-        client.sendMsg(client.getNickname() + " [Отправлено для " + nick + "]" + text);
+    }
+
+    private void sendUserList() {
+        StringBuilder userListString = new StringBuilder();
+        userListString.append("/updateUL");
+        for (ClientHandler l : users) {
+            userListString.append(" " + l.getNickname());
+        }
+        String out = userListString.toString();
+        for (ClientHandler c : users) {
+            c.sendMsg(out);
+        }
+    }
+
+    public void privateMessage(ClientHandler nickFrom, String nickTo, String message) {
+        for (ClientHandler nickBase : users) {
+            if (nickTo.equals(nickBase.getNickname()) && !nickBase.checkBlackList(nickFrom.getNickname())) {
+                if (!nickFrom.getNickname().equals(nickTo)) { //нельзя отправлять самому себе (хотя я бы отправлял:) может у меня и друзей то нет
+                    nickBase.sendMsg("[Пришло приватно от " + nickFrom.getNickname() + "]" + message);
+                    nickFrom.sendMsg(nickFrom.getNickname() + ": [Отправлено приватно для " + nickTo + "]" + message);
+                }
+            }
+        }
+
     }
 
     public boolean isAuthUser(String nick) {

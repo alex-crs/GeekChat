@@ -1,33 +1,29 @@
 package sample;
 
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import server.ClientHandler;
-import server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class Controller {
+
+public class Controller implements Initializable {
 
     public static final String ADDRESS = "127.0.0.1";
     public static final int PORT = 6001;
@@ -36,15 +32,15 @@ public class Controller {
     DataOutputStream out;
     Insets mainSceneNormalInsets = new Insets(0, 0, 0, 0);
     Insets mainSceneAuthInsets = new Insets(25, 0, 0, 0);
-    //ObservableList<String> users = FXCollections.observableArrayList();
+    private List<TextArea> textAreas;
     @FXML
-    TableView<String> userList;
+    public volatile Label name;
     @FXML
-    TextArea dialog;
+    TextArea generalDialog;
+    @FXML
+    ListView<String> userList;
     @FXML
     TextField writerArea;
-    @FXML
-    ImageView userIcon;
     @FXML
     SplitPane mainScene;
     @FXML
@@ -66,11 +62,14 @@ public class Controller {
             authLine.setVisible(true);
             writePane.setDisable(true);
             mainScene.setPadding(mainSceneAuthInsets);
+            userList.setVisible(false);
+            name.setVisible(false);
         } else {
             authLine.setVisible(false);
             writePane.setDisable(false);
             mainScene.setPadding(mainSceneNormalInsets);
-            userList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+            userList.setVisible(true);
+            name.setVisible(true);
         }
     }
 
@@ -96,27 +95,54 @@ public class Controller {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
+            setAuthorized(false);
+
             new Thread(() -> {
                 try {
                     while (true) {
                         String str = in.readUTF();
-                        if ("/auth-ok".equals(str)) {
+                        if (!str.isEmpty() && "/end".equals(str)) {
+                            break;
+                        }
+                        if (!str.isEmpty() && str.startsWith("/auth-ok")) {
+                            String[] tokens = str.split(" ");
                             setAuthorized(true);
-                            dialog.clear();
+                            generalDialog.clear();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    name.setText(tokens[1]);
+                                }
+                            });
                             break;
                         } else {
-                            dialog.appendText(str + "\n");
+                            for (TextArea ta : textAreas) {
+                                generalDialog.appendText(str + "\n");
+                            }
                         }
                     }
                     while (true) {
                         String str = in.readUTF();
-                        if ("/end".equals(str)) {
+                        if (!str.isEmpty() && "/end".equals(str)) {
                             break;
+                        } else if (str.startsWith("/history ")) {
+                            generalDialog.clear();
+                            generalDialog.appendText(str.substring(9, str.length()));
+                        } else if (str.startsWith("/updateUL")) {
+                            String[] tokens = str.split(" ");
+                            Arrays.sort(tokens);
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    userList.getItems().clear();
+                                    for (int i = 1; i < tokens.length; i++) {
+                                        userList.getItems().add(tokens[i]);
+                                    }
+                                }
+                            });
+                        } else {
+                            generalDialog.appendText(str + "\n");
                         }
-                        /*if (str.startsWith("/updateUL")) { //пока не работает
-                            userListUpdate(str);
-                        } else {*/
-                            dialog.appendText(str + "\n");
                     }
                 } catch (IOException e) {
                     System.out.println("Связь с сервером разорвана");
@@ -130,8 +156,7 @@ public class Controller {
                 }
             }).start();
         } catch (IOException e) {
-            e.printStackTrace();
-            dialog.appendText("Connection refused\n");
+            generalDialog.appendText("Нет соединения с сервером\n");
         }
     }
 
@@ -140,34 +165,71 @@ public class Controller {
         if (socket == null || socket.isClosed()) {
             connect();
         }
+
         try {
-            out.writeUTF("/auth " + loginField.getText() + " " + passwordField.getText());
-            loginField.clear();
-            passwordField.clear();
+            if (socket != null && !loginField.getText().isEmpty() && !passwordField.getText().isEmpty()) {
+                out.writeUTF("/auth " + loginField.getText().toLowerCase() + " " + passwordField.getText());
+                loginField.clear();
+                passwordField.clear();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Нет соединения с сервером");
         }
     }
 
     public void disconnect() {
+        if (socket != null) {
+            if (!socket.isClosed()) {
+                try {
+                    out.writeUTF("/end");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void selectClient(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() == 2) {
+            PrivateMessageStage ms = new PrivateMessageStage(userList.getSelectionModel().getSelectedItem(), out, textAreas);
+            ms.setMinWidth(400);
+            ms.setMinHeight(100);
+            ms.setResizable(false);
+            ms.show();
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        connect();
+        setAuthorized(false);
+        textAreas = new ArrayList<>();
+        textAreas.add(generalDialog);
+    }
+
+    public void logUp(ActionEvent actionEvent) {
+        RegistrationStage rs = new RegistrationStage(out);
+        rs.setMinWidth(400);
+        rs.setMinHeight(150);
+        rs.setResizable(false);
+        rs.show();
+    }
+
+    @FXML
+    public void offline() {
         try {
             out.writeUTF("/end");
+            writerArea.clear();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        try {
-            socket.close();
-        } catch (IOException e) {
-            //e.printStackTrace();
-        }
     }
-
-    private void userListUpdate(String str) { //функционал пока не работает...
-        String[] strArray = str.split(" ");
-        //пытался добавить сюда и ListView и TableView и даже TreeView:( но со всем одна и та же проблема, список отображается, но удаляются пользователи некорректно...
-
-    }
-
 
 }
