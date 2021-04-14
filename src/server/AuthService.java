@@ -102,7 +102,7 @@ public class AuthService {
             PreparedStatement rs = connection.prepareStatement(query);
             rs.setString(1, blacklist.toString());
             rs.setString(2, nick);
-            System.out.println(rs.executeUpdate());
+            rs.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

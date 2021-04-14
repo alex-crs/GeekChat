@@ -58,7 +58,7 @@ public class Server {
 
     public void broadCastMessage(ClientHandler from, String str) {
         for (ClientHandler c : users) {
-            if (!c.checkBlackList(from.getNickname())) {
+            if (!c.checkBlackList(from.getNickname().toLowerCase())) {
                 c.sendMsg(str);
             }
         }
@@ -78,7 +78,7 @@ public class Server {
 
     public void privateMessage(ClientHandler nickFrom, String nickTo, String message) {
         for (ClientHandler nickBase : users) {
-            if (nickTo.equals(nickBase.getNickname()) && !nickBase.checkBlackList(nickFrom.getNickname())) {
+            if (nickTo.equals(nickBase.getNickname()) && !nickBase.checkBlackList(nickFrom.getNickname().toLowerCase())) {
                 if (!nickFrom.getNickname().equals(nickTo)) { //нельзя отправлять самому себе (хотя я бы отправлял:) может у меня и друзей то нет
                     nickBase.sendMsg("[Пришло приватно от " + nickFrom.getNickname() + "]" + message);
                     nickFrom.sendMsg(nickFrom.getNickname() + ": [Отправлено приватно для " + nickTo + "]" + message);

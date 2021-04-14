@@ -91,6 +91,7 @@ public class ClientHandler {
                         while (true) {    //переписать на switch case и объединить в один блок
                             String str = in.readUTF();
                             if (!str.isEmpty() && str.equals("/end")) {
+                                isExit = true;
                                 AuthService.historySaveToSQL(nickname, chatHistory.toString());
                                 out.writeUTF("server closed");
                                 System.out.printf("Client [$s] disconnected\n", socket.getInetAddress());
@@ -102,7 +103,7 @@ public class ClientHandler {
 
                             } else if (str.startsWith("/blacklist ")) {
                                 String[] tokens = str.split(" ");
-                                blacklist.add(tokens[1]);
+                                blacklist.add(tokens[1].toLowerCase());
                                 sendMsg("You added " + tokens[1] + " to blacklist");
                                 AuthService.blackListSQLSynchronization(nickname, blacklist);
                             } else {
@@ -148,7 +149,7 @@ public class ClientHandler {
 
     public void sendMsg(String msg) {
         try {
-            if (!msg.startsWith("/") && !msg.startsWith("@")) {
+            if (nickname != null && !msg.startsWith("/") && !msg.startsWith("@")) {
                 chatHistory.append(msg + "\n");
             }
             out.writeUTF(msg);
