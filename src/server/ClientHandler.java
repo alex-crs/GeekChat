@@ -62,8 +62,7 @@ public class ClientHandler {
                                     sendMsg("/auth-ok " + nickname);
                                     server.subscribe(ClientHandler.this);
                                     blacklist = AuthService.getBlackList(nickname);
-                                    chatHistory.append(AuthService.getHistory(nickname));
-                                    sendMsg("/history " + chatHistory.toString());
+                                    sendMsg("/history " + AuthService.getHistory(nickname));
                                     break;
                                 } else {
                                     sendMsg("Учетная запись уже используется");

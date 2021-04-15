@@ -21,7 +21,7 @@ public class Main extends Application {
         primaryStage.getIcons().add(image);
         primaryStage.setMinWidth(300);
         primaryStage.setMinHeight(140);
-        FXMLLoader mainWindow = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+        FXMLLoader mainWindow = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent main = mainWindow.load();
         primaryStage.setTitle("ChatForOne");
         primaryStage.setScene(new Scene(main, 600, 500));
