@@ -34,7 +34,7 @@ public class AuthService {
     }
 
     public static ArrayList<String> getBlackList(String nickname) {
-        String query = String.format("select blacklist from users where nickname='%s'", nickname); //запрос содержимого черного списка
+        String query = String.format("select blockedUsers from blacklist where nickname='%s'", nickname); //запрос содержимого черного списка
 
         try {
             ResultSet rs = statement.executeQuery(query);
@@ -57,6 +57,9 @@ public class AuthService {
             ResultSet rs = statement.executeQuery(query);
             if (rs.next()) {
                 if (rs.getString(1) != null) {
+                    rs.getString(1).substring(0,rs.getString(1).indexOf("\n")); //построковое считывание
+                    String[] str = rs.getString(1).split("\n");
+
 
                     return rs.getString(1);
                 }
@@ -92,17 +95,27 @@ public class AuthService {
         }
     }
 
-    public static void blackListSQLSynchronization(String nick, List<String> blacklistArray) {
-        String query = "UPDATE users SET blacklist=? where nickname=?"; //UPDATE users SET blacklist='nick1' where nickname='nick2'
-        StringBuilder blacklist = new StringBuilder();
+    public static void blackListSQLSynchronization(String nickname, List<String> blacklistArray) {
+        String querySelect = String.format("select blockedUsers from blacklist where nickname='%s'", nickname);
+        String queryAdd = "INSERT INTO blacklist (nickname, blockedUsers) VALUES (?, ?);";
+        String queryUpdate = "UPDATE blacklist SET blockedUsers=? where nickname=?";
+        StringBuilder blockedUsers = new StringBuilder();
         for (String l : blacklistArray) {
-            blacklist.append(l + " ");
+            blockedUsers.append(l + " ");
         }
         try {
-            PreparedStatement rs = connection.prepareStatement(query);
-            rs.setString(1, blacklist.toString());
-            rs.setString(2, nick);
-            rs.executeUpdate();
+            ResultSet rsSelect = statement.executeQuery(querySelect);
+            if (rsSelect.next()) {
+                PreparedStatement rsUpdate = connection.prepareStatement(queryUpdate);
+                rsUpdate.setString(1, blockedUsers.toString());
+                rsUpdate.setString(2, nickname);
+                rsUpdate.executeUpdate();
+            } else {
+                PreparedStatement rsAdd = connection.prepareStatement(queryAdd);
+                rsAdd.setString(1,nickname);
+                rsAdd.setString(2,blockedUsers.toString());
+                rsAdd.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -122,7 +135,6 @@ public class AuthService {
                 if (myHash == dbHash) {
                     return nick;
                 }
-                //return rs.getString("nickname"); //нумерация начинается с 1 а не с 0 как обычно
             }
         } catch (SQLException e) {
             e.printStackTrace();

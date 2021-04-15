@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -198,7 +197,7 @@ public class Controller implements Initializable {
 
     public void selectClient(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
-            PrivateMessageStage ms = new PrivateMessageStage(userList.getSelectionModel().getSelectedItem(), out, textAreas);
+            MiniStage ms = new MiniStage(userList.getSelectionModel().getSelectedItem(), out, textAreas);
             ms.setMinWidth(400);
             ms.setMinHeight(100);
             ms.setResizable(false);

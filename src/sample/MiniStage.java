@@ -10,19 +10,19 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class PrivateMessageStage extends Stage {
+public class MiniStage extends Stage {
     String nickTo;
     DataOutputStream out;
     List<TextArea> parentList;
 
-    public PrivateMessageStage(String nickTo, DataOutputStream out, List<TextArea> parentList) {
+    public MiniStage(String nickTo, DataOutputStream out, List<TextArea> parentList) {
         this.nickTo = nickTo;
         this.out = out;
         this.parentList = parentList;
 
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("PrivateMessageWindow.fxml"));
+            root = FXMLLoader.load(getClass().getResource("personal.fxml"));
             setTitle("private with [" + nickTo + "]");
             Scene scene = new Scene(root, 400, 100);
             setScene(scene);
