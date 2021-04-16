@@ -1,104 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?scenebuilder-stylesheet /styles/style.css?>
+
+
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.InnerShadow?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
+<VBox alignment="center" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+      fx:controller="sample.Controller">
+    <stylesheets>
+        <URL value="@/styles/style.css" />
+    </stylesheets>
+    <children>
 
-<AnchorPane maxHeight="1500.0" maxWidth="1500.0" minHeight="200.0" minWidth="200.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-   <children>
-      <MenuBar prefHeight="25.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Menu">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Add user" />
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="Status">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Online" />
-                  <MenuItem mnemonicParsing="false" text="Offline" />
-               </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Settings">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Color" />
-                  <MenuItem mnemonicParsing="false" text="Text" />
-                  <MenuItem mnemonicParsing="false" text="Connection" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <SplitPane fx:id="mainScene" dividerPositions="0.0" layoutX="133.0" layoutY="138.0" minHeight="300.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
-        <items>
-          <AnchorPane maxWidth="200.0" minHeight="200.0" minWidth="150.0" prefHeight="160.0" prefWidth="150.0">
-               <children>
-                  <TableView fx:id="userList" prefHeight="350.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                      <TableColumn minWidth="150.0" prefWidth="150.0" text="Userlist" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <SplitPane dividerPositions="0.9029649595687331" layoutX="76.0" layoutY="49.0" orientation="VERTICAL" prefHeight="373.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <items>
-                      <AnchorPane minHeight="200.0" minWidth="200.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextArea fx:id="dialog" editable="false" focusTraversable="false" layoutX="149.0" layoutY="14.0" minHeight="200.0" minWidth="200.0" prefHeight="323.0" prefWidth="415.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="14.0" />
-                                 </font></TextArea>
-                              <ImageView fx:id="userIcon" fitHeight="40.0" fitWidth="40.0" layoutX="10.0" layoutY="0.0" AnchorPane.topAnchor="0.0" />
+        <HBox fx:id="upperPanel">
+            <children>
+                <TextField fx:id="loginField" promptText="Login" HBox.hgrow="ALWAYS" styleClass="field"/>
+                <PasswordField fx:id="passwordField" onAction="#tryToAuth" promptText="Password" styleClass="field">
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin></PasswordField>
+                <Button onAction="#tryToAuth" styleClass="btn" text="Log in">
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin></Button>
+                <Button mnemonicParsing="false" onAction="#logUp" styleClass="btn" text="Log up">
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </HBox>
 
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane fx:id="writePane" disable="true" maxHeight="60.0" minHeight="30.0" minWidth="50.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextField fx:id="writerArea" layoutX="27.0" layoutY="2.0" maxWidth="300.0" onAction="#sendMsg" prefHeight="30.0" prefWidth="340.0" promptText="Enter message..." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="13.0" />
-                                 </font></TextField>
-                              <Button id="smileBtn" layoutX="8.0" layoutY="4.0" mnemonicParsing="false" text=":-)" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <Button id="sendBtn" layoutX="339.0" layoutY="4.0" mnemonicParsing="false" onAction="#sendMsg" text="SEND" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
-               </children>
-            </AnchorPane>
-        </items>
-         <padding>
-            <Insets top="25.0" />
-         </padding>
-      </SplitPane>
-      <HBox fx:id="authLine" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="30.0" minWidth="600.0" prefHeight="30.0" prefWidth="600.0" AnchorPane.bottomAnchor="347.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
-         <children>
-            <TextField fx:id="loginField" minHeight="-Infinity" minWidth="-Infinity" onAction="#tryToAuth" prefHeight="30.0" prefWidth="270.0" promptText="Enter login..." />
-            <PasswordField fx:id="passwordField" minHeight="30.0" minWidth="250.0" onAction="#tryToAuth" prefHeight="30.0" prefWidth="270.0" promptText="Enter password..." />
-            <Button fx:id="Sign" minHeight="30.0" minWidth="60.0" mnemonicParsing="false" onAction="#tryToAuth" prefHeight="30.0" prefWidth="60.0" text="Sign" />
-         </children>
-      </HBox>
-   </children>
-   <effect>
-      <InnerShadow />
-   </effect>
-</AnchorPane>
+        <HBox VBox.vgrow="ALWAYS">
+            <children>
+                <VBox HBox.hgrow="ALWAYS">
+                    <children>
+                        <TextArea fx:id="chatArea" editable="false" minWidth="300.0" VBox.vgrow="ALWAYS" styleClass="field"/>
+                        <HBox fx:id="bottomPanel" managed="false" visible="false">
+                            <children>
+                                <TextField fx:id="textField" onAction="#sendMsg" promptText="Enter message..." HBox.hgrow="ALWAYS" styleClass="field"/>
+                                <Button onAction="#sendMsg" styleClass="btn" text="Send" />
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </padding>
+                </VBox>
+                <ListView fx:id="clientList" minWidth="100" onMouseClicked="#selectClient">
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </padding></ListView>
+                <Label fx:id="userName" styleClass="userLogin" text="userName" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

@@ -1,173 +1,219 @@
 package sample;
 
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import server.ClientHandler;
-import server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class Controller {
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 
-    public static final String ADDRESS = "127.0.0.1";
-    public static final int PORT = 6001;
-    Socket socket;
-    DataInputStream in;
-    DataOutputStream out;
-    Insets mainSceneNormalInsets = new Insets(0, 0, 0, 0);
-    Insets mainSceneAuthInsets = new Insets(25, 0, 0, 0);
-    //ObservableList<String> users = FXCollections.observableArrayList();
-    @FXML
-    TableView<String> userList;
-    @FXML
-    TextArea dialog;
-    @FXML
-    TextField writerArea;
-    @FXML
-    ImageView userIcon;
-    @FXML
-    SplitPane mainScene;
-    @FXML
-    PasswordField passwordField;
-    @FXML
-    TextField loginField;
-    @FXML
-    HBox authLine;
-    @FXML
-    AnchorPane writePane;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
-    private boolean isAuthorized;
+public class Controller implements Initializable {
+	@FXML
+	TextArea chatArea;
 
-    public void setAuthorized(boolean authorized) {
-        this.isAuthorized = authorized;
+	@FXML
+	TextField textField;
 
-        if (!isAuthorized) {
-            authLine.setVisible(true);
-            writePane.setDisable(true);
-            mainScene.setPadding(mainSceneAuthInsets);
-        } else {
-            authLine.setVisible(false);
-            writePane.setDisable(false);
-            mainScene.setPadding(mainSceneNormalInsets);
-            userList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        }
-    }
+	@FXML
+	HBox bottomPanel;
 
+	@FXML
+	HBox upperPanel;
 
-    @FXML
-    public void sendMsg() {
-        if (!writerArea.getText().isEmpty()) {
-            try {
-                out.writeUTF(writerArea.getText());
-                writerArea.clear();
-                writerArea.requestFocus();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	@FXML
+	TextField loginField;
 
+	@FXML
+	PasswordField passwordField;
 
-    public void connect() {
-        try {
-            socket = new Socket(ADDRESS, PORT);
+	@FXML
+	ListView<String> clientList;
 
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+	@FXML
+	private Label userName;
 
-            new Thread(() -> {
-                try {
-                    while (true) {
-                        String str = in.readUTF();
-                        if ("/auth-ok".equals(str)) {
-                            setAuthorized(true);
-                            dialog.clear();
-                            break;
-                        } else {
-                            dialog.appendText(str + "\n");
-                        }
-                    }
-                    while (true) {
-                        String str = in.readUTF();
-                        if ("/end".equals(str)) {
-                            break;
-                        }
-                        /*if (str.startsWith("/updateUL")) { //пока не работает
-                            userListUpdate(str);
-                        } else {*/
-                            dialog.appendText(str + "\n");
-                    }
-                } catch (IOException e) {
-                    System.out.println("Связь с сервером разорвана");
-                } finally {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    setAuthorized(false);
-                }
-            }).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            dialog.appendText("Connection refused\n");
-        }
-    }
+	Socket socket;
+	DataInputStream in;
+	DataOutputStream out;
 
-    @FXML
-    public void tryToAuth(ActionEvent actionEvent) {
-        if (socket == null || socket.isClosed()) {
-            connect();
-        }
-        try {
-            out.writeUTF("/auth " + loginField.getText() + " " + passwordField.getText());
-            loginField.clear();
-            passwordField.clear();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	static final String ADDRESS = "localhost";
+	static final int PORT = 6001;
 
-    public void disconnect() {
-        try {
-            out.writeUTF("/end");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	private boolean isAuthorized;
 
-        try {
-            socket.close();
-        } catch (IOException e) {
-            //e.printStackTrace();
-        }
-    }
+	List<TextArea> textAreas;
 
-    private void userListUpdate(String str) { //функционал пока не работает...
-        String[] strArray = str.split(" ");
-        //пытался добавить сюда и ListView и TableView и даже TreeView:( но со всем одна и та же проблема, список отображается, но удаляются пользователи некорректно...
+	public void setAuthorized(boolean isAuthorized) {
+		this.isAuthorized = isAuthorized;
+		if (!isAuthorized) {
+			upperPanel.setVisible(true);
+			upperPanel.setManaged(true);
 
-    }
+			bottomPanel.setVisible(false);
+			bottomPanel.setManaged(false);
+
+			clientList.setVisible(false);
+			clientList.setManaged(false);
+		} else {
+			upperPanel.setVisible(false);
+			upperPanel.setManaged(false);
+
+			bottomPanel.setVisible(true);
+			bottomPanel.setManaged(true);
+
+			clientList.setVisible(true);
+			clientList.setManaged(true);
+		}
+	}
+
+	@FXML
+	void sendMsg() {
+		try {
+			out.writeUTF(textField.getText());
+			textField.clear();
+			textField.requestFocus();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 
+	public void connect() {
+		try {
+			userName.setText("test");
+			socket = new Socket(ADDRESS, PORT);
+
+			in = new DataInputStream(socket.getInputStream());
+			out = new DataOutputStream(socket.getOutputStream());
+
+			setAuthorized(false);
+
+			new Thread(() -> {
+				try {
+					while (true) {
+						String str = in.readUTF();
+						if ("/auth-OK".equals(str)) {
+							setAuthorized(true);
+							chatArea.clear();
+							break;
+						} else {
+							for (TextArea ta : textAreas) {
+								ta.appendText(str + "\n");
+							}
+						}
+					}
+
+					while (true) {
+						String str = in.readUTF();
+						if ("/serverClosed".equals(str)) {
+							break;
+						}
+						if (str.startsWith("/clientList ")) {
+							String[] tokens = str.split(" ");
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									clientList.getItems().clear();
+									for (int i = 1; i < tokens.length; i++) {
+										clientList.getItems().add(tokens[i]);
+									}
+								}
+							});
+						} else {
+							chatArea.appendText(str + "\n");
+						}
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						socket.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					setAuthorized(false);
+				}
+			}).start();
+		} catch (IOException e) {
+			e.printStackTrace();
+			chatArea.appendText("Connection refused)\nServer is not available");
+		}
+	}
+
+	public void tryToAuth(ActionEvent actionEvent) {
+		if (socket == null || socket.isClosed()) {
+			connect();
+		}
+		try {
+			out.writeUTF("/auth " + loginField.getText() + " " + passwordField.getText());
+			loginField.clear();
+			passwordField.clear();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void disconnect() {
+		if (socket != null) {
+			if (!socket.isClosed()) {
+				try {
+					out.writeUTF("/end");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				try {
+					socket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public void selectClient(MouseEvent mouseEvent) {
+		if (mouseEvent.getClickCount() == 2) {
+			MiniStage ms = new MiniStage(clientList.getSelectionModel().getSelectedItem(), out, textAreas);
+			ms.show();
+		}
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		setAuthorized(false);
+		textAreas = new ArrayList<>();
+		textAreas.add(chatArea);
+	}
+
+	public void logUp(ActionEvent actionEvent) {
+		RegistrationStage rs = new RegistrationStage(out);
+		rs.show();
+	}
 }
