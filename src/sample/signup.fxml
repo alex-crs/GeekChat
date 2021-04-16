@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import java.net.URL?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?scenebuilder-stylesheet /firstVersion.css/Styles.firstVersion.css?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="center" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.RegistrationController">
-    <stylesheets>
-        <URL value="@/styles/style.css" />
-    </stylesheets>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.RegistrationController">
    <children>
-       <TextField fx:id="login" promptText="Login" styleClass="field">
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </VBox.margin>
-      </TextField>
-       <PasswordField fx:id="password" promptText="Password" styleClass="field">
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </VBox.margin>
-      </PasswordField>
-       <TextField fx:id="nickname" promptText="Nickname" styleClass="field">
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </VBox.margin>
-      </TextField>
-       <Button fx:id="signupBtn" onAction="#signUp" styleClass="btn" text="Sign Up" >
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </VBox.margin>
-      </Button>
-       <Label fx:id="resultLabel" visible="false"/>
+      <VBox layoutX="168.0" layoutY="109.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TextField fx:id="login" onAction="#signUp" promptText="Введите желаемый логин" />
+            <PasswordField fx:id="password" onAction="#signUp" promptText="Введите пароль" />
+            <PasswordField fx:id="passwordRepeater" onAction="#signUp" promptText="Повторите пароль" />
+            <TextField fx:id="nickname" onAction="#signUp" promptText="Введите желаемый никнейм" />
+            <Label fx:id="resultLabel" alignment="CENTER" prefHeight="17.0" prefWidth="581.0" style="-fx-background-color: white;" text="Заполните все поля" />
+            <Button fx:id="signupBtn" mnemonicParsing="false" onAction="#signUp" prefHeight="25.0" prefWidth="600.0" text="Sign Up" />
+         </children>
+      </VBox>
    </children>
-</VBox>
+</AnchorPane>
