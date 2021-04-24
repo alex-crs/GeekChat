@@ -60,8 +60,8 @@ public class HistorySQLRequests {
                 query.setString(2, chatHistory);  //записываем данные
                 query.executeUpdate();
             }
-
-
+            query.close();
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
