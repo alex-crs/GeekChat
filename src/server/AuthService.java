@@ -96,7 +96,7 @@ public class AuthService {
         }
     }
 
-    public static void blackListSQLSynchronization(String nickname, List<String> blacklistArray) {
+    public static void blackListSQLSynchronization(String nickname, List<String> blacklistArray) {  //переписать все на preparestatement
         String querySelect = String.format("select blockedUsers from blacklist where nickname='%s'", nickname);
         String queryAdd = "INSERT INTO blacklist (nickname, blockedUsers) VALUES (?, ?);";
         String queryUpdate = "UPDATE blacklist SET blockedUsers=? where nickname=?";
