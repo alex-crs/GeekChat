@@ -1,15 +1,11 @@
 package server;
 
-import javafx.application.Platform;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 public class ClientHandler {
     private Server server;
@@ -61,8 +57,8 @@ public class ClientHandler {
                                     setNickName(nick);
                                     sendMsg("/auth-ok " + nickname);
                                     server.subscribe(ClientHandler.this);
-                                    blacklist = AuthService.getBlackList(nickname);
-                                    sendMsg("/history " + AuthService.getHistory(nickname));
+                                    blacklist = BlackListSQLRequests.getBlackList(nickname);
+                                    sendMsg("/history " + HistorySQLRequests.getHistory(nickname));
                                     break;
                                 } else {
                                     sendMsg("Учетная запись уже используется");
@@ -91,7 +87,7 @@ public class ClientHandler {
                             String str = in.readUTF();
                             if (!str.isEmpty() && str.equals("/end")) {
                                 isExit = true;
-                                AuthService.historySaveToSQL(nickname, chatHistory.toString());
+                                HistorySQLRequests.historySaveToSQL(nickname, chatHistory.toString());
                                 out.writeUTF("server closed");
                                 System.out.printf("Client [$s] disconnected\n", socket.getInetAddress());
                                 break;
@@ -104,7 +100,7 @@ public class ClientHandler {
                                 String[] tokens = str.split(" ");
                                 blacklist.add(tokens[1].toLowerCase());
                                 sendMsg("You added " + tokens[1] + " to blacklist");
-                                AuthService.blackListSQLSynchronization(nickname, blacklist);
+                                BlackListSQLRequests.blackListSQLSynchronization(nickname, blacklist);
                             } else {
                                 server.broadCastMessage(this, nickname + ": " + str);
                             }
