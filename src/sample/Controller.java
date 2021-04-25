@@ -11,9 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,14 +24,17 @@ public class Controller implements Initializable {
 
     public static final String ADDRESS = "127.0.0.1";
     public static final int PORT = 6001;
+    private static final int HISTORY_SIZE = 100; //размер загружаемой истории
     Socket socket;
     DataInputStream in;
     DataOutputStream out;
     Insets mainSceneNormalInsets = new Insets(0, 0, 0, 0);
     Insets mainSceneAuthInsets = new Insets(25, 0, 0, 0);
+    File file;
+    BufferedWriter bw;
     private List<TextArea> textAreas;
     @FXML
-    public volatile Label name;
+    Label name;  //никнэйм
     @FXML
     TextArea generalDialog;
     @FXML
@@ -93,7 +94,6 @@ public class Controller implements Initializable {
 
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-
             setAuthorized(false);
 
             new Thread(() -> {
@@ -113,6 +113,7 @@ public class Controller implements Initializable {
                                     name.setText(tokens[1]);
                                 }
                             });
+                            localHistoryLoad(tokens[1]);  //<- добавил метод загрузки истории из файла
                             break;
                         } else {
                             for (TextArea ta : textAreas) {
@@ -120,6 +121,7 @@ public class Controller implements Initializable {
                             }
                         }
                     }
+                    bw = new BufferedWriter(new FileWriter(file, true));
                     while (true) {
                         String str = in.readUTF();
                         if (!str.isEmpty() && "/end".equals(str)) {
@@ -141,11 +143,17 @@ public class Controller implements Initializable {
                             });
                         } else {
                             generalDialog.appendText(str + "\n");
+                            bw.write(str + "\n"); //<- сохраняем историю в файл
                         }
                     }
                 } catch (IOException e) {
                     System.out.println("Связь с сервером разорвана");
                 } finally {
+                    try {
+                        bw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     try {
                         socket.close();
                     } catch (IOException e) {
@@ -229,6 +237,35 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void localHistoryLoad(String name) {
+        file = new File("src/sample/history/" + name + ".txt");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            ArrayList<String> lines = new ArrayList<>();
+            while (true) {
+                String line = br.readLine();
+                if (line != null) {
+                    lines.add(line);
+                } else {
+                    for (int i = (lines.size() <= HISTORY_SIZE ? 0 : lines.size() - HISTORY_SIZE); i < lines.size(); i++) {
+                        generalDialog.appendText(lines.get(i) + "\n");
+                    }
+                    break;
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

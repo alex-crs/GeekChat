@@ -58,7 +58,7 @@ public class ClientHandler {
                                     sendMsg("/auth-ok " + nickname);
                                     server.subscribe(ClientHandler.this);
                                     blacklist = BlackListSQLRequests.getBlackList(nickname);
-                                    sendMsg("/history " + HistorySQLRequests.getHistory(nickname));
+                                    //sendMsg("/history " + HistorySQLRequests.getHistory(nickname)); //<- отключил загрузку истории из базы данных
                                     break;
                                 } else {
                                     sendMsg("Учетная запись уже используется");
@@ -87,12 +87,12 @@ public class ClientHandler {
                             String str = in.readUTF();
                             if (!str.isEmpty() && str.equals("/end")) {
                                 isExit = true;
-                                HistorySQLRequests.historySaveToSQL(nickname, chatHistory.toString());
+                                //HistorySQLRequests.historySaveToSQL(nickname, chatHistory.toString()); //<- отключил сохранение истории в базе данных
                                 out.writeUTF("server closed");
                                 System.out.printf("Client [$s] disconnected\n", socket.getInetAddress());
                                 break;
                             } else if (str.startsWith("@")) {
-                                String[] tokens = str.split(" ", 2); //можно поставить например 2 и тогда будет делиться на два элемента массива
+                                String[] tokens = str.split(" ", 2);
                                 String nick = tokens[0].substring(1);
                                 server.privateMessage(this, tokens[0].substring(1), tokens[1]);
 
