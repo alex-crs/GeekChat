@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientHandler {
     private Server server;
@@ -17,6 +19,8 @@ public class ClientHandler {
     //черный список у пользователя
     private List<String> blacklist;
     private StringBuilder chatHistory;
+    //2. На серверной стороне сетевого чата реализовать управление потоками через ExecutorService.
+    private ExecutorService threadManager;
 
 
     public ClientHandler(Server server, Socket socket) {
@@ -27,7 +31,8 @@ public class ClientHandler {
             this.out = new DataOutputStream(socket.getOutputStream());
             chatHistory = new StringBuilder();
             this.timer = System.currentTimeMillis();
-            new Thread(() -> {
+            this.threadManager = Executors.newFixedThreadPool(2);
+            Thread timeOutThread = new Thread(() -> {
                 while (true) {
                     long timerEnd = System.currentTimeMillis() - timer;
                     if (!this.socket.isClosed() && nickname == null && timerEnd > 50000) {
@@ -41,9 +46,9 @@ public class ClientHandler {
                         break;
                     }
                 }
-            }).start();
+            });
 
-            new Thread(() -> {
+            Thread mainClientHandlerThread = new Thread(() -> {
                 try {
                     //auth -/auth login pass
                     boolean isExit = false;
@@ -128,11 +133,15 @@ public class ClientHandler {
                     }
                     server.unSubscribe(this);
                 }
-            }).start();
+            });
+            threadManager.execute(timeOutThread);
+            threadManager.execute(mainClientHandlerThread);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        threadManager.shutdown();
     }
+
 
     private void setNickName(String nick) {
         this.nickname = nick;
