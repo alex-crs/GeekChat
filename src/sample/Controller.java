@@ -24,7 +24,7 @@ public class Controller implements Initializable {
 
     public static final String ADDRESS = "127.0.0.1";
     public static final int PORT = 6001;
-    private static final int HISTORY_SIZE = 100; //размер загружаемой истории
+    private static final int HISTORY_SIZE = 3; //размер загружаемой истории
     Socket socket;
     DataInputStream in;
     DataOutputStream out;
@@ -248,24 +248,34 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         }
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            ArrayList<String> lines = new ArrayList<>();
-            while (true) {
-                String line = br.readLine();
-                if (line != null) {
-                    lines.add(line);
-                } else {
-                    for (int i = (lines.size() <= HISTORY_SIZE ? 0 : lines.size() - HISTORY_SIZE); i < lines.size(); i++) {
-                        generalDialog.appendText(lines.get(i) + "\n");
+        try {
+            RandomAccessFile rf = new RandomAccessFile(file, "r");
+            long length = file.length() - 1;
+            int readLine = 0;
+            StringBuilder sb = new StringBuilder();
+            for (long i = length; i >= 0; i--) {
+                try {
+                    rf.seek(i);
+                    char c = (char) rf.read();
+                    if (c == '\n') {
+                        readLine++;
+                        if (readLine == HISTORY_SIZE) {
+                            break;
+                        }
                     }
-                    break;
+                    sb.append(c);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
             }
-        } catch (IOException e) {
+            generalDialog.appendText(new String(
+                    sb.reverse()
+                            .toString()
+                            .getBytes("ISO-8859-1"), "UTF-8"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
     }
-
 }
