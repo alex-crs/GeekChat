@@ -24,19 +24,16 @@
           <Menu mnemonicParsing="false" text="Menu">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#logUp" text="Add user" />
+                  <MenuItem mnemonicParsing="false" onAction="#offline" text="Offline" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Status">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Online" />
-                  <MenuItem mnemonicParsing="false" onAction="#offline" text="Offline" />
-               </items>
-            </Menu>
           <Menu mnemonicParsing="false" text="Settings">
             <items>
               <MenuItem mnemonicParsing="false" text="Color" />
                   <MenuItem mnemonicParsing="false" text="Text" />
                   <MenuItem mnemonicParsing="false" text="Connection" />
+                  <MenuItem mnemonicParsing="false" onAction="#showHistoryPropertiesWindow" text="History properties" />
+                  <MenuItem mnemonicParsing="false" onAction="#serverHistoryLoad" text="Load history" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -79,7 +76,7 @@
                         </AnchorPane>
                     </items>
                   </SplitPane>
-                  <Label fx:id="name" alignment="CENTER" layoutX="14.0" layoutY="10.0" prefHeight="30.0" prefWidth="415.0" style="-fx-background-color: white;" text="userName" textFill="#134d0f" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="nickName" alignment="CENTER" layoutX="14.0" layoutY="10.0" prefHeight="30.0" prefWidth="415.0" style="-fx-background-color: white;" text="userName" textFill="#134d0f" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="Comic Sans MS" size="18.0" />
                      </font></Label>

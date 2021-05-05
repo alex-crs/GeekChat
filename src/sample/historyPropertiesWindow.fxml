@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="150.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.HistoryPropertiesController">
+   <children>
+      <VBox prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label prefHeight="26.0" prefWidth="450.0" text="Размер загружаемой истории:" />
+            <TextField fx:id="historySize" />
+            <Button mnemonicParsing="false" onAction="#setNewHistorySizeLoad" text="Изменить размер загружаемой истории" />
+            <Label fx:id="loadHistoryStatus" prefHeight="23.0" prefWidth="400.0" text="label" />
+            <Button fx:id="btn" mnemonicParsing="false" onAction="#loadHistoryFromServer" text="Изменить место загрузки истории" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -80,8 +80,8 @@ public class Server {
         for (ClientHandler nickBase : users) {
             if (nickTo.equals(nickBase.getNickname()) && !nickBase.checkBlackList(nickFrom.getNickname().toLowerCase())) {
                 if (!nickFrom.getNickname().equals(nickTo)) { //нельзя отправлять самому себе (хотя я бы отправлял:) может у меня и друзей то нет
-                    nickBase.sendMsg("[Пришло приватно от " + nickFrom.getNickname() + "]" + message);
-                    nickFrom.sendMsg(nickFrom.getNickname() + ": [Отправлено приватно для " + nickTo + "]" + message);
+                    nickBase.sendMsg("->[Пришло приватно от " + nickFrom.getNickname() + "]" + message);
+                    nickFrom.sendMsg("->"+nickFrom.getNickname() + ": [Отправлено приватно для " + nickTo + "]" + message);
                 }
             }
         }

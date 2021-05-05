@@ -24,17 +24,17 @@ public class Controller implements Initializable {
 
     public static final String ADDRESS = "127.0.0.1";
     public static final int PORT = 6001;
-    private static final int HISTORY_SIZE = 3; //размер загружаемой истории
+    private static int HISTORY_SIZE = 100; //размер загружаемой истории
     Socket socket;
     DataInputStream in;
     DataOutputStream out;
     Insets mainSceneNormalInsets = new Insets(0, 0, 0, 0);
     Insets mainSceneAuthInsets = new Insets(25, 0, 0, 0);
     File file;
-    BufferedWriter bw;
+    private static boolean loadHistoryFromServer;
     private List<TextArea> textAreas;
     @FXML
-    Label name;  //никнэйм
+    Label nickName;
     @FXML
     TextArea generalDialog;
     @FXML
@@ -52,6 +52,21 @@ public class Controller implements Initializable {
     @FXML
     AnchorPane writePane;
 
+    public static void setLoadHistoryFromServer(boolean loadHistoryFromServer) {
+        Controller.loadHistoryFromServer = loadHistoryFromServer;
+    }
+
+    public static boolean isLoadHistoryFromServer() {
+        return loadHistoryFromServer;
+    }
+
+    public static int getHistorySize() {
+        return HISTORY_SIZE;
+    }
+
+    public static void setHistorySize(int historySize) {
+        HISTORY_SIZE = historySize;
+    }
 
     private boolean isAuthorized;
 
@@ -63,13 +78,13 @@ public class Controller implements Initializable {
             writePane.setDisable(true);
             mainScene.setPadding(mainSceneAuthInsets);
             userList.setVisible(false);
-            name.setVisible(false);
+            nickName.setVisible(false);
         } else {
             authLine.setVisible(false);
             writePane.setDisable(false);
             mainScene.setPadding(mainSceneNormalInsets);
             userList.setVisible(true);
-            name.setVisible(true);
+            nickName.setVisible(true);
         }
     }
 
@@ -110,10 +125,10 @@ public class Controller implements Initializable {
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    name.setText(tokens[1]);
+                                    nickName.setText(tokens[1]);
                                 }
                             });
-                            localHistoryLoad(tokens[1]);  //<- добавил метод загрузки истории из файла
+                            localHistoryLoad(tokens[1]);
                             break;
                         } else {
                             for (TextArea ta : textAreas) {
@@ -121,13 +136,12 @@ public class Controller implements Initializable {
                             }
                         }
                     }
-                    bw = new BufferedWriter(new FileWriter(file, true));
+
                     while (true) {
                         String str = in.readUTF();
                         if (!str.isEmpty() && "/end".equals(str)) {
                             break;
                         } else if (str.startsWith("/history ")) {
-                            generalDialog.clear();
                             generalDialog.appendText(str.substring(9, str.length()));
                         } else if (str.startsWith("/updateUL")) {
                             String[] tokens = str.split(" ");
@@ -143,17 +157,12 @@ public class Controller implements Initializable {
                             });
                         } else {
                             generalDialog.appendText(str + "\n");
-                            bw.write(str + "\n"); //<- сохраняем историю в файл
+                            writeHistoryToFile(str);
                         }
                     }
                 } catch (IOException e) {
                     System.out.println("Связь с сервером разорвана");
                 } finally {
-                    try {
-                        bw.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     try {
                         socket.close();
                     } catch (IOException e) {
@@ -205,7 +214,9 @@ public class Controller implements Initializable {
 
     public void selectClient(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
-            MiniStage ms = new MiniStage(userList.getSelectionModel().getSelectedItem(), out, textAreas);
+            MiniStage ms = new MiniStage(
+                    userList.getSelectionModel()
+                            .getSelectedItem(), out, textAreas);
             ms.setMinWidth(400);
             ms.setMinHeight(100);
             ms.setResizable(false);
@@ -229,6 +240,12 @@ public class Controller implements Initializable {
         rs.show();
     }
 
+    public void showHistoryPropertiesWindow(){
+        HistoryPropertiesStage hps = new HistoryPropertiesStage(out);
+        hps.setResizable(false);
+        hps.show();
+    }
+
     @FXML
     public void offline() {
         try {
@@ -236,6 +253,31 @@ public class Controller implements Initializable {
             writerArea.clear();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void writeHistoryToFile(String text){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))){
+            if (!text.startsWith("->")) {
+                bw.write(text + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void serverHistoryLoad(){
+        if (isLoadHistoryFromServer()) {
+            try {
+                generalDialog.clear();
+                out.writeUTF("/getHistory");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            generalDialog.clear();
+            localHistoryLoad(nickName.getText());
         }
     }
 

@@ -63,7 +63,6 @@ public class ClientHandler {
                                     sendMsg("/auth-ok " + nickname);
                                     server.subscribe(ClientHandler.this);
                                     blacklist = BlackListSQLRequests.getBlackList(nickname);
-                                    //sendMsg("/history " + HistorySQLRequests.getHistory(nickname)); //<- отключил загрузку истории из базы данных
                                     break;
                                 } else {
                                     sendMsg("Учетная запись уже используется");
@@ -92,7 +91,7 @@ public class ClientHandler {
                             String str = in.readUTF();
                             if (!str.isEmpty() && str.equals("/end")) {
                                 isExit = true;
-                                //HistorySQLRequests.historySaveToSQL(nickname, chatHistory.toString()); //<- отключил сохранение истории в базе данных
+                                HistorySQLRequests.historySaveToSQL(nickname, chatHistory.toString()); //<- отключил сохранение истории в базе данных
                                 out.writeUTF("server closed");
                                 System.out.printf("Client [$s] disconnected\n", socket.getInetAddress());
                                 break;
@@ -106,6 +105,8 @@ public class ClientHandler {
                                 blacklist.add(tokens[1].toLowerCase());
                                 sendMsg("You added " + tokens[1] + " to blacklist");
                                 BlackListSQLRequests.blackListSQLSynchronization(nickname, blacklist);
+                            } else if ("/getHistory".equals(str)){
+                                sendMsg("/history " + HistorySQLRequests.getHistory(nickname));
                             } else {
                                 server.broadCastMessage(this, nickname + ": " + str);
                             }
