@@ -1,5 +1,7 @@
 package server;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,6 +9,8 @@ import java.util.Vector;
 
 public class Server {
     private Vector<ClientHandler> users; //синхронизированный лист
+    private static final Logger LOGGER = Logger.getLogger(Server.class);
+    private int PORT = 6001;
 
     public Server() {
         users = new Vector<>();
@@ -14,12 +18,14 @@ public class Server {
         Socket socket = null; //мы получаем
 
         try {
+            LOGGER.info("Попытка запуска сервера");
             AuthService.connect();
-            server = new ServerSocket(6001);
-            System.out.println("Сервер запущен");
+            server = new ServerSocket(PORT);
+            LOGGER.info("Сервер запущен, слушает порт: " + PORT);
             while (true) {
                 socket = server.accept(); //сервер принимает данные если связь установлена
-                System.out.printf("Client [%s]  try to connect\n", socket.getInetAddress());
+                //System.out.printf("Клиент пытается подключиться [%s]\n", socket.getInetAddress());
+                LOGGER.info(String.format("Клиент [%s] осуществляет подключение к серверу", socket.getInetAddress()));
                 new ClientHandler(this, socket);
             }
 
@@ -30,12 +36,12 @@ public class Server {
                 System.out.printf("Client %s disconnected", socket.getInetAddress());
                 socket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.debug("Произошла ошибка:", e);
             }
             try {
                 server.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.debug("Произошла ошибка:", e);
             }
             AuthService.disconnect();
         }
