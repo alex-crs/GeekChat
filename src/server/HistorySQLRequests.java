@@ -34,7 +34,7 @@ public class HistorySQLRequests {
             rs.close();
             query.close();
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
         LOGGER.info(String.format("У клиента [%s] отсутствует доступная история", nickname));
         return "";
@@ -71,7 +71,7 @@ public class HistorySQLRequests {
             query.close();
             rs.close();
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
     }
 }

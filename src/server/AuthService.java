@@ -18,7 +18,7 @@ public class AuthService {
             connection = DriverManager.getConnection("jdbc:sqlite:main.db"); //подключаем базу данных
             statement = connection.createStatement(); //создаем состояние
         } catch (ClassNotFoundException | SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
     }
 
@@ -38,7 +38,7 @@ public class AuthService {
             LOGGER.info(String.format(result == 0 ? "Не удалось добавить пользователя": "Пользователь успешно добавлен в базу данных"));
             return result;
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
         return 0;
     }
@@ -62,7 +62,7 @@ public class AuthService {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
         LOGGER.info(String.format("Пользователь с логином %s отсутствует в базе данных", login));
         return null;
@@ -72,7 +72,7 @@ public class AuthService {
         try {
             connection.close();
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
     }
 }

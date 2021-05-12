@@ -36,12 +36,12 @@ public class Server {
                 System.out.printf("Client %s disconnected", socket.getInetAddress());
                 socket.close();
             } catch (IOException e) {
-                LOGGER.debug("Произошла ошибка:", e);
+                LOGGER.error("Произошла ошибка:", e);
             }
             try {
                 server.close();
             } catch (IOException e) {
-                LOGGER.debug("Произошла ошибка:", e);
+                LOGGER.error("Произошла ошибка:", e);
             }
             AuthService.disconnect();
         }

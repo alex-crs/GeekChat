@@ -32,7 +32,7 @@ public class BlackListSQLRequests {
             ps.close();
             rs.close();
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
         LOGGER.info(String.format("У клиента [%s] пустой blacklist", nickname));
         return new ArrayList<>();
@@ -70,7 +70,7 @@ public class BlackListSQLRequests {
             query.close();
             rs.close();
         } catch (SQLException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
     }
 

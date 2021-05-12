@@ -43,7 +43,7 @@ public class ClientHandler {
                             this.socket.close();
                             break;
                         } catch (IOException e) {
-                            LOGGER.debug("Произошла ошибка:", e);
+                            LOGGER.error("Произошла ошибка:", e);
                         }
                     } else if (nickname != null) {
                         break;
@@ -129,7 +129,7 @@ public class ClientHandler {
                 } catch (SocketException e) {
                     LOGGER.debug(String.format("Соединение с %s сброшено", socket.getInetAddress()));
                 } catch (IOException e) {
-                    LOGGER.debug("Произошла ошибка:", e);
+                    LOGGER.error("Произошла ошибка:", e);
                 } finally {
                     try {
                         in.close();
@@ -153,7 +153,7 @@ public class ClientHandler {
             threadManager.execute(timeOutThread);
             threadManager.execute(mainClientHandlerThread);
         } catch (IOException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
         threadManager.shutdown();
     }
@@ -174,7 +174,7 @@ public class ClientHandler {
             }
             out.writeUTF(msg);
         } catch (IOException e) {
-            LOGGER.debug("Произошла ошибка:", e);
+            LOGGER.error("Произошла ошибка:", e);
         }
     }
 
