@@ -1,4 +1,4 @@
-package sample;
+package client;
 
 
 import javafx.application.Platform;
@@ -282,7 +282,7 @@ public class Controller implements Initializable {
     }
 
     private void localHistoryLoad(String name) {
-        file = new File("src/sample/history/" + name + ".txt");
+        file = new File("src/main/resources/history/" + name + ".txt");
         if (!file.exists()) {
             try {
                 file.createNewFile();

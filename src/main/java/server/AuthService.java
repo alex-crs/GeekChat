@@ -3,9 +3,6 @@ package server;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class AuthService {
     private static Connection connection;

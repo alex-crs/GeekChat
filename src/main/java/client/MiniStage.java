@@ -1,4 +1,4 @@
-package sample;
+package client;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +22,7 @@ public class MiniStage extends Stage {
 
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("personal.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/fxml/personal.fxml"));
             setTitle("private with [" + nickTo + "]");
             Scene scene = new Scene(root, 400, 100);
             setScene(scene);

@@ -1,4 +1,4 @@
-package sample;
+package client;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,7 +15,7 @@ public class HistoryPropertiesStage extends Stage {
         Parent root = null;
         this.out = out;
         try {
-            root = FXMLLoader.load(getClass().getResource("historyPropertiesWindow.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/fxml/historyPropertiesWindow.fxml"));
             setTitle("Параметры истории");
             Scene scene = new Scene(root, 400, 150);
             setScene(scene);

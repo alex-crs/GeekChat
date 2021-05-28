@@ -1,4 +1,4 @@
-package sample;
+package client;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +16,7 @@ public class RegistrationStage extends Stage {
         this.out = out;
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("signup.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/fxml/signup.fxml"));
             setTitle("Sign Up");
             Scene scene = new Scene(root, 400, 150);
             setScene(scene);

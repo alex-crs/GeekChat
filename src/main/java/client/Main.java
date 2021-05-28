@@ -1,4 +1,4 @@
-package sample;
+package client;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -16,12 +16,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         InputStream iconStream =
-                getClass().getResourceAsStream("icon.png");
+                getClass().getResourceAsStream("/images/icon.png");
         Image image = new Image(iconStream);
         primaryStage.getIcons().add(image);
         primaryStage.setMinWidth(300);
         primaryStage.setMinHeight(140);
-        FXMLLoader mainWindow = new FXMLLoader(getClass().getResource("sample.fxml"));
+        FXMLLoader mainWindow = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"));
         Parent main = mainWindow.load();
         primaryStage.setTitle("ChatForOne");
         primaryStage.setScene(new Scene(main, 600, 500));
